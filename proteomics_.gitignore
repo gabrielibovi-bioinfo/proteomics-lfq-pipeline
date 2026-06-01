@@ -1,0 +1,28 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Input data (never upload)
+data/
+*.xlsx
+*.csv
+*.tsv
+
+# Generated results (reproducible from scripts)
+results/
+figuras/
+analise_DEP/
+Normalization_report/
+limma_rlr_BH/
+gsea_GO/
+gsea_kegg/
+gsea_reactome/
+*.tiff
+*.pdf
+*.png
+
+# OS
+.DS_Store
+Thumbs.db
