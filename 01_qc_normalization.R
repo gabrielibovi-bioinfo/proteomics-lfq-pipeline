@@ -18,7 +18,7 @@
 # Output files:
 #   - Normalization_report/        (normalization and QC PDF reports)
 #   - limma_rlr_BH/                (limma results per contrast)
-#   - figuras/pre-processing/      (heatmaps, PCA plots)
+#   - figures/pre-processing/      (heatmaps, PCA plots)
 #
 # NOTE: Update FILE_PATH at the top of this script before running.
 ################################################################################
@@ -70,7 +70,7 @@ dados_lfq <- dados_lfq[rowSums(dados_lfq > 0) > 0, ]
 dados_lfq <- dados_lfq[rowSums(!is.na(dados_lfq)) >= 1, ]
 
 # Remove constant proteins (zero variance)
-vars      <- apply(dados_lfq, 1, var, na.rm = TRUE)
+vars <- apply(dados_lfq, 1, var, na.rm = TRUE)
 dados_lfq <- dados_lfq[vars > 0, ]
 
 cat("Missing values after preprocessing:", sum(is.na(dados_lfq)), "\n")
@@ -101,8 +101,7 @@ heatmap_all <- pheatmap(
   show_rownames            = FALSE,
   cluster_cols             = FALSE
 )
-# ggsave(plot = heatmap_all, "figuras/pre-processing/01_heatmap_all.tiff",
-#        width = 5.1, height = 5.3, dpi = 300, bg = "white")
+# ggsave(plot = heatmap_all, "figures/pre-processing/01_heatmap_all.tiff", width = 5.1, height = 5.3, dpi = 300, bg = "white")
 
 # --- 3.2: Pearson correlation heatmap ---
 cor_matrix    <- cor(dados_lfq, use = "pairwise.complete.obs", method = "pearson")
@@ -120,8 +119,7 @@ heatmap_corr <- pheatmap(
   show_colnames            = FALSE,
   border_color             = FALSE
 )
-# ggsave(plot = heatmap_corr, "figuras/pre-processing/02_pearson_correlation.tiff",
-#        width = 5, height = 5, dpi = 300, bg = "white")
+# ggsave(plot = heatmap_corr, "figures/pre-processing/02_pearson_correlation.tiff", width = 5, height = 5, dpi = 300, bg = "white")
 
 # --- 3.3: PCA — all samples ---
 pca_res     <- prcomp(t(dados_lfq), center = TRUE, scale. = TRUE)
@@ -150,8 +148,7 @@ pca_all <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Group, label = Sample)) 
   )
 
 print(pca_all)
-# ggsave(plot = pca_all, "figuras/pre-processing/03_pca_all.tiff",
-#        width = 5.5, height = 4.4, dpi = 300, bg = "white")
+# ggsave(plot = pca_all, "figures/pre-processing/03_pca_all.tiff", width = 5.5, height = 4.4, dpi = 300, bg = "white")
 
 # ==============================================================================
 # SECTION 4: Remove outlier sample (SC-1) and repeat QC
@@ -179,8 +176,7 @@ heatmap_filt <- pheatmap(
   show_rownames            = FALSE,
   cluster_cols             = FALSE
 )
-# ggsave(plot = heatmap_filt, "figuras/pre-processing/04_heatmap_no_SC1.tiff",
-#        width = 5.1, height = 5.3, dpi = 300, bg = "white")
+# ggsave(plot = heatmap_filt, "figures/pre-processing/04_heatmap_no_SC1.tiff", width = 5.1, height = 5.3, dpi = 300, bg = "white")
 
 # --- 4.2: Pearson correlation — after outlier removal ---
 cor_filt      <- cor(dados_lfq_filt, use = "pairwise.complete.obs", method = "pearson")
@@ -198,8 +194,7 @@ heatmap_filt_corr <- pheatmap(
   show_colnames            = FALSE,
   border_color             = FALSE
 )
-# ggsave(plot = heatmap_filt_corr, "figuras/pre-processing/05_pearson_no_SC1.tiff",
-#        width = 5, height = 5, dpi = 300, bg = "white")
+# ggsave(plot = heatmap_filt_corr, "figures/pre-processing/05_pearson_no_SC1.tiff", width = 5, height = 5, dpi = 300, bg = "white")
 
 # --- 4.3: PCA — after outlier removal ---
 pca_filt_res  <- prcomp(t(dados_lfq_filt), center = TRUE, scale. = TRUE)
@@ -226,18 +221,11 @@ pca_filt <- ggplot(pca_filt_df, aes(x = PC1, y = PC2, color = Group, label = Sam
   )
 
 print(pca_filt)
-# ggsave(plot = pca_filt, "figuras/pre-processing/06_pca_no_SC1.tiff",
-#        width = 5.5, height = 4.4, dpi = 300, bg = "white")
+# ggsave(plot = pca_filt, "figures/pre-processing/06_pca_no_SC1.tiff", width = 5.5, height = 4.4, dpi = 300, bg = "white")
 
 # ==============================================================================
 # SECTION 5: Normalization with proteoDA (RLR)
 # ==============================================================================
-
-# Normalization method comparison (number of DEPs found):
-#   cycloess | BH: 11 up - 13 down = 24
-#   vsn      | BH: 11 up - 12 down = 23
-#   rlr      | BH: 11 up - 15 down = 26  *** Best overall performance
-#   quantile | BH:  9 up - 14 down = 23
 
 # Reload full dataset for proteoDA workflow
 dados_raw  <- read_excel(FILE_PATH)
@@ -293,8 +281,7 @@ write_norm_report(
 )
 
 # Normalize using RLR (robust linear regression)
-normalized <- normalize_data(filtered, norm_method = "rlr")
-# Other options: "cycloess", "vsn", "quantile"
+normalized <- normalize_data(filtered, norm_method = "rlr") # Other options: "cycloess", "vsn", "quantile"
 
 # Generate QC report
 write_qc_report(
@@ -312,6 +299,12 @@ write_qc_report(
   show_all_proteins = FALSE
 )
 
+# Normalization method comparison (number of DEPs found):
+#   cycloess | BH: 11 up - 13 down = 24
+#   vsn      | BH: 11 up - 12 down = 23
+#   rlr      | BH: 11 up - 15 down = 26  *** Best overall performance
+#   quantile | BH:  9 up - 14 down = 23
+
 # ==============================================================================
 # SECTION 6: Differential expression analysis with limma
 # ==============================================================================
@@ -322,8 +315,7 @@ normalized$metadata$group <- factor(normalized$metadata$group, levels = c("MO", 
 no_intercept <- add_design(normalized, design_formula = ~0 + group)
 
 # Define contrast: MO vs SC
-no_intercept <- add_contrasts(no_intercept,
-                              contrasts_vector = c("MO_vs_SC = MO - SC"))
+no_intercept <- add_contrasts(no_intercept, contrasts_vector = c("MO_vs_SC = MO - SC"))
 
 # Fit limma model
 fit <- fit_limma_model(no_intercept)
