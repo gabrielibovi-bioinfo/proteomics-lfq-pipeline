@@ -38,12 +38,11 @@ MaxQuant output (.xlsx)
 
 ```
 proteomics-lfq-pipeline/
-├── R/
-│   ├── 01_qc_normalization.R    # Preprocessing, QC, normalization, limma
-│   ├── 02_dep_analysis.R        # DEP visualization: volcano, heatmap, PCA
-│   └── 03_gsea.R                # GSEA: GO, KEGG, Reactome
-├── data/                        # Place input .xlsx file here (gitignored)
-├── results/                     # Output files (gitignored)
+├── 01_qc_normalization.R    # Preprocessing, QC, normalization, limma
+├── 02_dep_analysis.R        # DEP visualization: volcano, heatmap, PCA
+├── 03_gsea.R                # GSEA: GO, KEGG, Reactome
+├── data/                    # Place input .xlsx file here
+├── results/                 # Output files
 ├── README.md
 ├── .gitignore
 └── LICENSE
@@ -58,23 +57,18 @@ proteomics-lfq-pipeline/
 ### R dependencies
 
 ```r
-install.packages(c("readxl", "ggplot2", "tidyr", "dplyr", "pheatmap",
-                   "factoextra", "plotly", "ggfortify", "RColorBrewer",
+install.packages(c("readxl", "ggplot2", "tidyr", "dplyr", "pheatmap", "factoextra", "plotly", "ggfortify", "RColorBrewer",
                    "readr", "tibble", "ggrepel", "writexl"))
 
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
-BiocManager::install(c("preprocessCore", "affy", "vsn",
-                        "ComplexHeatmap", "clusterProfiler", "enrichplot",
-                        "gprofiler2", "AnnotationDbi", "org.Rn.eg.db",
-                        "ReactomePA"))
+BiocManager::install(c("preprocessCore", "affy", "vsn", "ComplexHeatmap", "clusterProfiler", "enrichplot",
+                        "gprofiler2", "AnnotationDbi", "org.Rn.eg.db", "ReactomePA"))
 
 # proteoDA (normalization and differential expression)
-devtools::install_github("ByrumLab/proteoDA",
-                         dependencies    = TRUE,
-                         build_vignettes = TRUE,
-                         force           = TRUE)
+devtools::install_github("ByrumLab/proteoDA", dependencies = TRUE,
+                         build_vignettes = TRUE, force = TRUE)
 ```
 
 ---
@@ -89,10 +83,6 @@ Update the file path at the top of the script:
 FILE_PATH <- "data/proteomics_data.xlsx"
 ```
 
-```r
-source("R/01_qc_normalization.R")
-```
-
 **Outputs:**
 ```
 Normalization_report/               # PDF reports (normalization + QC)
@@ -101,10 +91,6 @@ figuras/pre-processing/             # Heatmaps, PCA (pre/post outlier removal)
 ```
 
 ### Step 2 — DEP visualization
-
-```r
-source("R/02_dep_analysis.R")
-```
 
 **Outputs:**
 ```
@@ -117,10 +103,6 @@ analise_DEP/03_pca_pvalue.tiff
 ```
 
 ### Step 3 — GSEA (GO, KEGG, Reactome)
-
-```r
-source("R/03_gsea.R")
-```
 
 **Outputs:**
 ```
@@ -145,6 +127,8 @@ gsea_reactome/  # Reactome results (CSV) and 13 figures
 | Min gene set size   | 5      | GSEA (all databases)       |
 | Max gene set size   | 800    | GSEA (all databases)       |
 
+Modify based on your data.
+
 ---
 
 ## Tools and References
@@ -153,7 +137,7 @@ gsea_reactome/  # Reactome results (CSV) and 13 figures
 |-----------------|-----------|
 | proteoDA        | [Byrum Lab, GitHub](https://github.com/ByrumLab/proteoDA) |
 | limma           | [Ritchie et al., 2015](https://doi.org/10.1093/nar/gkv007) |
-| clusterProfiler | [Wu et al., 2021](https://doi.org/10.1016/j.xinn.2021.100141) |
+| clusterProfiler | [Yu et al., 2012](https://doi.org/10.1089/omi.2011.01) |
 | ReactomePA      | [Yu & He, 2016](https://doi.org/10.1039/C5MB00663E) |
 | org.Rn.eg.db    | [Bioconductor](https://bioconductor.org/packages/org.Rn.eg.db) |
 | pheatmap        | [Kolde, 2019](https://CRAN.R-project.org/package=pheatmap) |
@@ -173,7 +157,7 @@ gsea_reactome/  # Reactome results (CSV) and 13 figures
 
 ## Author
 
-**Gabriel Ibovi**
+**Gabrieli Bovi**
 Bioinformatics | Proteomics | Multi-omics Data Analysis
 🔗 [github.com/gabrielibovi-bioinfo](https://github.com/gabrielibovi-bioinfo)
 
