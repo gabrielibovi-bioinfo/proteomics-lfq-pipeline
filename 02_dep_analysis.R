@@ -47,9 +47,9 @@ set.seed(123)
 # SECTION 1: Load limma results
 # ==============================================================================
 
-dados <- read_csv("limma_rlr_BH/per_contrast_results/MO_vs_SC.csv",
-                  show_col_types = FALSE)
+dados <- read_csv("limma_rlr_BH/per_contrast_results/MO_vs_SC.csv", show_col_types = FALSE)
 
+summary(dados)
 summary(dados$logFC)
 
 # ==============================================================================
@@ -80,10 +80,6 @@ print(logfc_thresholds)
 # SECTION 3: logFC density plot
 # ==============================================================================
 
-# logFC threshold set to 0 due to small variance between treatment groups
-logfc_threshold <- 0
-pval_threshold  <- 0.05
-
 lfc_density <- ggplot(dados, aes(x = logFC)) +
   geom_density(fill = "#A1C9F4", alpha = 0.6) +
   geom_vline(xintercept = 0, color = "black", linetype = "dashed") +
@@ -96,13 +92,16 @@ lfc_density <- ggplot(dados, aes(x = logFC)) +
   theme_minimal(base_size = 13)
 
 print(lfc_density)
-# ggsave(plot = lfc_density, "analise_DEP/LFC_density.tiff",
-#        width = 5, height = 4, dpi = 300, bg = "white")
+# ggsave(plot = lfc_density, "analise_DEP/LFC_density.tiff", width = 5, height = 4, dpi = 300, bg = "white")
 
 # ==============================================================================
 # SECTION 4: Categorize proteins by expression direction
 # ==============================================================================
 
+# logFC threshold set to 0 due to small variance between treatment groups
+logfc_threshold <- 0
+pval_threshold  <- 0.05
+                       
 dados <- dados %>%
   mutate(
     expression_category = case_when(
@@ -119,7 +118,7 @@ dep_counts <- dados %>%
   arrange(desc(n))
 
 print(dep_counts)
-# write_xlsx(dep_counts, "analise_DEP/contagem_degs_sig.xlsx")
+# write_xlsx(dep_counts, "analise_DEP/counts_degs_sig.xlsx")
 
 # ==============================================================================
 # SECTION 5: Volcano plot
@@ -154,8 +153,7 @@ volcano_plot <- ggplot(dados,
   theme(plot.title = element_text(hjust = 0.5))
 
 print(volcano_plot)
-# ggsave(plot = volcano_plot, "analise_DEP/01_volcano_plot.tiff",
-#        width = 6, height = 5, dpi = 300, bg = "white")
+# ggsave(plot = volcano_plot, "analise_DEP/01_volcano_plot.tiff", width = 6, height = 5, dpi = 300, bg = "white")
 
 # ==============================================================================
 # SECTION 6: Heatmap of differentially expressed proteins (DEPs)
@@ -199,8 +197,7 @@ heatmap_dep <- pheatmap(
   na_col                   = "#053061"
 )
 
-# tiff("analise_DEP/02_heatmap_DEP.tiff",
-#      width = 7, height = 7, units = "in", res = 300, bg = "white")
+# tiff("analise_DEP/02_heatmap_DEP.tiff", width = 7, height = 7, units = "in", res = 300, bg = "white")
 # print(heatmap_dep)
 # dev.off()
 
@@ -228,5 +225,4 @@ pca_dep <- ggplot(pca_df, aes(PC1, PC2, color = Group)) +
   scale_color_manual(values = c("MO" = "seagreen", "SC" = "chocolate"))
 
 print(pca_dep)
-# ggsave(plot = pca_dep, "analise_DEP/03_pca_pvalue.tiff",
-#        width = 5.5, height = 4.4, dpi = 300, bg = "white")
+# ggsave(plot = pca_dep, "analise_DEP/03_pca_pvalue.tiff", width = 5.5, height = 4.4, dpi = 300, bg = "white")
